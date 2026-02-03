@@ -102,8 +102,7 @@
   .service-item {
     @apply flex items-center justify-between py-4
            border-b border-decimal-navy/10
-           hover:text-decimal-purple transition-colors cursor-pointer
-           group;
+           hover:text-decimal-purple transition-colors cursor-pointer;
   }
 
   .service-item:last-child {

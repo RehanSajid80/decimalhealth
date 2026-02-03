@@ -135,7 +135,7 @@ export default function Assessment({ onComplete, eventName = 'Vive 2026' }: Asse
         const answer = answers[q.id] as string
         const option = q.options.find((o) => o.value === answer)
         if (option && 'score' in option) {
-          totalScore += option.score
+          totalScore += (option as { score: number }).score
         }
       }
     })
