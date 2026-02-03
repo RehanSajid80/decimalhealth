@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-decimal-cream text-decimal-navy antialiased;
+    font-feature-settings: "ss01", "ss02", "cv01";
+  }
+
+  ::selection {
+    @apply bg-decimal-purple text-white;
+  }
+}
+
+@layer components {
+  /* Button Styles */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-7 py-3.5
+           bg-decimal-navy text-white font-semibold rounded-full
+           hover:bg-decimal-purple transition-all duration-300
+           shadow-sm hover:shadow-md;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-7 py-3.5
+           bg-transparent text-decimal-navy font-semibold
+           border-2 border-decimal-navy rounded-full
+           hover:bg-decimal-navy hover:text-white transition-all duration-300;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2
+           text-decimal-purple font-semibold
+           hover:text-decimal-navy transition-all duration-300
+           underline underline-offset-4;
+  }
+
+  .btn-coral {
+    @apply inline-flex items-center justify-center px-7 py-3.5
+           bg-decimal-coral text-white font-semibold rounded-full
+           hover:bg-decimal-navy transition-all duration-300;
+  }
+
+  /* Card Styles */
+  .card {
+    @apply bg-white rounded-2xl p-8 shadow-sm
+           hover:shadow-md transition-all duration-300;
+  }
+
+  .card-elevated {
+    @apply bg-white rounded-2xl p-8
+           shadow-[0_2px_20px_rgba(61,61,107,0.06)]
+           hover:shadow-[0_4px_30px_rgba(61,61,107,0.1)]
+           transition-all duration-300;
+  }
+
+  /* Section Styles */
+  .section {
+    @apply py-16 md:py-24;
+  }
+
+  .section-heading {
+    @apply text-3xl md:text-4xl font-bold text-decimal-navy mb-4;
+  }
+
+  .section-subheading {
+    @apply text-lg md:text-xl text-decimal-navy/70 max-w-3xl;
+  }
+
+  /* Navigation */
+  .nav-link {
+    @apply text-decimal-navy/80 hover:text-decimal-purple
+           font-medium transition-colors duration-200 text-sm;
+  }
+
+  .nav-link-active {
+    @apply text-decimal-purple font-semibold;
+  }
+
+  /* Stats */
+  .stat-number {
+    @apply text-4xl md:text-5xl font-bold text-decimal-purple;
+  }
+
+  .stat-label {
+    @apply text-base text-decimal-navy/70 mt-2;
+  }
+
+  /* Container */
+  .container-lg {
+    @apply max-w-7xl mx-auto px-6 md:px-8;
+  }
+
+  /* Service List Item */
+  .service-item {
+    @apply flex items-center justify-between py-4
+           border-b border-decimal-navy/10
+           hover:text-decimal-purple transition-colors cursor-pointer
+           group;
+  }
+
+  .service-item:last-child {
+    @apply border-b-0;
+  }
+
+  /* CTA Banner */
+  .cta-banner {
+    @apply bg-decimal-purple text-white py-8 md:py-10;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
