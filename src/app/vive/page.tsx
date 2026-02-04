@@ -24,22 +24,17 @@ export default function VivePage() {
     return (
       <div className="min-h-screen bg-decimal-cream">
         {/* Header */}
-        <header className="bg-decimal-navy text-white py-4">
+        <header className="bg-white shadow-sm py-4">
           <div className="container-lg flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <svg width="32" height="40" viewBox="0 0 40 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M0 8C0 3.58172 3.58172 0 8 0H24C33.9411 0 42 8.05887 42 18V18C42 27.9411 33.9411 36 24 36H0V8Z"
-                  fill="white"
-                />
-                <circle cx="8" cy="44" r="4" fill="#2D9596" />
-              </svg>
-              <span className="text-xl font-bold">
-                decimal<span className="text-decimal-teal">.health</span>
-              </span>
+            <Link href="/" className="flex items-center">
+              <img
+                src="/decimalhealth/logo.png"
+                alt="Decimal Health"
+                className="h-14 md:h-16 lg:h-[4.5rem] w-auto"
+              />
             </Link>
             <div className="flex items-center gap-2 text-sm">
-              <span className="bg-decimal-coral px-3 py-1 rounded-full font-semibold">
+              <span className="bg-decimal-coral text-white px-3 py-1 rounded-full font-semibold">
                 VIVE 2026
               </span>
             </div>
@@ -65,23 +60,18 @@ export default function VivePage() {
     return (
       <div className="min-h-screen bg-decimal-cream">
         {/* Header */}
-        <header className="bg-decimal-navy text-white py-4">
+        <header className="bg-white shadow-sm py-4">
           <div className="container-lg flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <svg width="32" height="40" viewBox="0 0 40 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M0 8C0 3.58172 3.58172 0 8 0H24C33.9411 0 42 8.05887 42 18V18C42 27.9411 33.9411 36 24 36H0V8Z"
-                  fill="white"
-                />
-                <circle cx="8" cy="44" r="4" fill="#2D9596" />
-              </svg>
-              <span className="text-xl font-bold">
-                decimal<span className="text-decimal-teal">.health</span>
-              </span>
+            <Link href="/" className="flex items-center">
+              <img
+                src="/decimalhealth/logo.png"
+                alt="Decimal Health"
+                className="h-14 md:h-16 lg:h-[4.5rem] w-auto"
+              />
             </Link>
             <button
               onClick={() => setShowAssessment(false)}
-              className="text-white/70 hover:text-white transition-colors"
+              className="text-decimal-navy/70 hover:text-decimal-navy transition-colors"
             >
               Exit Assessment
             </button>
@@ -105,24 +95,19 @@ export default function VivePage() {
   return (
     <div className="min-h-screen bg-decimal-cream">
       {/* Header */}
-      <header className="bg-decimal-navy text-white py-4">
+      <header className="bg-white shadow-sm py-4">
         <div className="container-lg flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <svg width="32" height="40" viewBox="0 0 40 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M0 8C0 3.58172 3.58172 0 8 0H24C33.9411 0 42 8.05887 42 18V18C42 27.9411 33.9411 36 24 36H0V8Z"
-                fill="white"
-              />
-              <circle cx="8" cy="44" r="4" fill="#2D9596" />
-            </svg>
-            <span className="text-xl font-bold">
-              decimal<span className="text-decimal-teal">.health</span>
-            </span>
+          <Link href="/" className="flex items-center">
+            <img
+              src="/decimalhealth/logo.png"
+              alt="Decimal Health"
+              className="h-14 md:h-16 lg:h-[4.5rem] w-auto"
+            />
           </Link>
           <button
             onClick={handleBookCall}
             className="bg-decimal-coral text-white px-5 py-2 rounded-full font-semibold
-                       hover:bg-white hover:text-decimal-navy transition-colors text-sm"
+                       hover:bg-decimal-navy hover:text-white transition-colors text-sm"
           >
             Book Meeting
           </button>
