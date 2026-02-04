@@ -75,7 +75,7 @@ export default function Navigation() {
           <img
             src="/decimalhealth/logo.png"
             alt="Decimal Health"
-            className="h-12 md:h-14 w-auto"
+            className="h-14 md:h-16 lg:h-[4.5rem] w-auto"
           />
         </Link>
 

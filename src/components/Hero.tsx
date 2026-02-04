@@ -72,7 +72,7 @@ export default function Hero() {
             <div className="relative overflow-hidden rounded-[2rem] lg:rounded-l-[4rem] lg:rounded-r-[2rem] aspect-[4/5] lg:aspect-[3/4]">
               {/* Elderly patient with caregiver using mobile health app */}
               <img
-                src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?auto=format&fit=crop&w=900&q=80"
+                src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=900&h=1200&q=80"
                 alt="Healthcare provider helping elderly patient with mobile health technology"
                 className="absolute inset-0 w-full h-full object-cover"
               />
