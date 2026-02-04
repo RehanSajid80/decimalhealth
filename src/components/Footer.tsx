@@ -40,21 +40,12 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-8 mb-12">
           {/* Brand & Address */}
           <div className="col-span-2 md:col-span-1 lg:col-span-2">
-            <Link href="/" className="flex items-center gap-3 mb-4">
-              <svg width="48" height="56" viewBox="0 0 48 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-                {/* d shape */}
-                <path
-                  d="M24 0H28V40H24C10.7452 40 0 29.2548 0 16V16C0 7.16344 7.16344 0 16 0H24Z"
-                  fill="#3D3D6B"
-                />
-                <circle cx="16" cy="20" r="8" fill="#F5F3F0" />
-                {/* dot */}
-                <circle cx="34" cy="48" r="6" fill="#7B7BAD" />
-              </svg>
-              <div>
-                <span className="text-xl font-bold text-decimal-navy block leading-tight">decimal</span>
-                <span className="text-sm font-medium text-decimal-purple leading-tight">health</span>
-              </div>
+            <Link href="/" className="inline-block mb-4">
+              <img
+                src="/decimalhealth/logo.png"
+                alt="Decimal Health"
+                className="h-14 w-auto"
+              />
             </Link>
             <address className="not-italic text-sm text-decimal-navy/60 mb-4 leading-relaxed">
               50 Milk Street<br />

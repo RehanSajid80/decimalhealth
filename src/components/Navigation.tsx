@@ -71,21 +71,12 @@ export default function Navigation() {
     >
       <nav className="container-lg flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3">
-          <svg width="36" height="44" viewBox="0 0 36 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-            {/* d shape */}
-            <path
-              d="M18 0H22V32H18C8.05888 32 0 23.9411 0 14V14C0 6.26801 6.26801 0 14 0H18Z"
-              fill="#3D3D6B"
-            />
-            <circle cx="14" cy="18" r="6" fill="#F5F3F0" />
-            {/* dot */}
-            <circle cx="26" cy="38" r="5" fill="#7B7BAD" />
-          </svg>
-          <div className="flex flex-col">
-            <span className="text-xl font-bold text-decimal-navy leading-tight">decimal</span>
-            <span className="text-sm font-medium text-decimal-purple leading-tight">health</span>
-          </div>
+        <Link href="/" className="flex items-center">
+          <img
+            src="/decimalhealth/logo.png"
+            alt="Decimal Health"
+            className="h-12 md:h-14 w-auto"
+          />
         </Link>
 
         {/* Desktop Navigation */}
