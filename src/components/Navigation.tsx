@@ -7,16 +7,16 @@ import Link from 'next/link'
 
 const navigation = [
   {
-    name: 'Who We Help',
+    name: 'Our Clients',
     href: '#who-we-help',
     children: [
       { name: 'Pharma & Life Sciences', href: '#life-sciences' },
       { name: 'Health Systems', href: '#health-systems' },
-      { name: 'Health Tech & MedTech Innovators', href: '#health-tech' },
+      { name: 'Health Tech & Med Innovators', href: '#health-tech' },
     ],
   },
   {
-    name: 'Services',
+    name: 'What We Offer',
     href: '#services',
     children: [
       { name: 'Advisory Services', href: '#advisory' },
@@ -27,22 +27,21 @@ const navigation = [
     ],
   },
   {
-    name: 'Insights+Impact',
+    name: 'Insights',
     href: '#insights',
     children: [
       { name: 'Case Studies', href: '#case-studies' },
       { name: 'Blog', href: '#blog' },
+      { name: 'White Papers', href: '#white-papers' },
     ],
   },
-  { name: 'Community Connect', href: '#community' },
   {
     name: 'About Us',
     href: '#about',
     children: [
-      { name: 'Leadership Team', href: '#leadership' },
-      { name: 'Our Story', href: '#story' },
-      { name: 'News', href: '#news' },
-      { name: 'Community', href: '#community' },
+      { name: 'Leadership', href: '#leadership' },
+      { name: 'The Decimal Ecosystem', href: '#ecosystem' },
+      { name: 'Careers', href: '#careers' },
       { name: 'Events', href: '#events' },
     ],
   },

@@ -4,30 +4,27 @@ import Link from 'next/link'
 import { Linkedin } from 'lucide-react'
 
 const footerLinks = {
-  whoWeHelp: [
+  ourClients: [
     { name: 'Pharma & Life Sciences', href: '#life-sciences' },
     { name: 'Health Systems', href: '#health-systems' },
-    { name: 'Health Tech & MedTech Innovators', href: '#health-tech' },
+    { name: 'Health Tech & Med Innovators', href: '#health-tech' },
   ],
-  services: [
+  whatWeOffer: [
     { name: 'Advisory Services', href: '#advisory' },
     { name: 'Partnering Services', href: '#partnering' },
     { name: 'Regulatory Strategy', href: '#regulatory' },
     { name: 'Market Adoption', href: '#market-adoption' },
     { name: 'Ecosystem Solutions', href: '#ecosystem' },
   ],
-  insightsImpact: [
+  insights: [
     { name: 'Case Studies', href: '#case-studies' },
     { name: 'Blog', href: '#blog' },
-  ],
-  communityConnect: [
-    { name: 'Community Connect', href: '#community' },
+    { name: 'White Papers', href: '#white-papers' },
   ],
   aboutUs: [
-    { name: 'Leadership Team', href: '#leadership' },
-    { name: 'Our Story', href: '#story' },
-    { name: 'News', href: '#news' },
-    { name: 'Community', href: '#community' },
+    { name: 'Leadership', href: '#leadership' },
+    { name: 'The Decimal Ecosystem', href: '#ecosystem' },
+    { name: 'Careers', href: '#careers' },
     { name: 'Events', href: '#events' },
   ],
 }
@@ -37,7 +34,7 @@ export default function Footer() {
     <footer className="bg-decimal-cream-dark text-decimal-navy">
       <div className="container-lg py-12 md:py-16">
         {/* Top Section */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-8 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-12">
           {/* Brand & Address */}
           <div className="col-span-2 md:col-span-1 lg:col-span-2">
             <Link href="/" className="inline-block mb-4">
@@ -76,11 +73,11 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Who We Help */}
+          {/* Our Clients */}
           <div>
-            <h4 className="font-semibold text-decimal-navy text-sm mb-3">Who We Help</h4>
+            <h4 className="font-semibold text-decimal-navy text-sm mb-3">Our Clients</h4>
             <ul className="space-y-2">
-              {footerLinks.whoWeHelp.map((link) => (
+              {footerLinks.ourClients.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
@@ -93,11 +90,11 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Services */}
+          {/* What We Offer */}
           <div>
-            <h4 className="font-semibold text-decimal-navy text-sm mb-3">Services</h4>
+            <h4 className="font-semibold text-decimal-navy text-sm mb-3">What We Offer</h4>
             <ul className="space-y-2">
-              {footerLinks.services.map((link) => (
+              {footerLinks.whatWeOffer.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
@@ -110,28 +107,11 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Insights + Impact */}
+          {/* Insights */}
           <div>
-            <h4 className="font-semibold text-decimal-navy text-sm mb-3">Insights + Impact</h4>
+            <h4 className="font-semibold text-decimal-navy text-sm mb-3">Insights</h4>
             <ul className="space-y-2">
-              {footerLinks.insightsImpact.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-decimal-navy/60 hover:text-decimal-purple transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Community Connect */}
-          <div>
-            <h4 className="font-semibold text-decimal-navy text-sm mb-3">Community Connect</h4>
-            <ul className="space-y-2">
-              {footerLinks.communityConnect.map((link) => (
+              {footerLinks.insights.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}

@@ -1,10 +1,12 @@
 import {
   Navigation,
   Hero,
+  HowWereDifferent,
   WhoWeHelp,
-  WhatWeOffer,
+  Newsletter,
+  WhatClientsComeFor,
+  Events,
   CTABanner,
-  OurImpact,
   Footer,
 } from '@/components'
 
@@ -14,10 +16,12 @@ export default function Home() {
       <Navigation />
       <main>
         <Hero />
+        <HowWereDifferent />
         <WhoWeHelp />
-        <WhatWeOffer />
+        <Newsletter />
+        <WhatClientsComeFor />
+        <Events />
         <CTABanner />
-        <OurImpact />
       </main>
       <Footer />
     </>

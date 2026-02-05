@@ -4,7 +4,11 @@ export { default as Footer } from './Footer'
 
 // Homepage Sections
 export { default as Hero } from './Hero'
+export { default as HowWereDifferent } from './HowWereDifferent'
 export { default as WhoWeHelp } from './WhoWeHelp'
+export { default as Newsletter } from './Newsletter'
+export { default as WhatClientsComeFor } from './WhatClientsComeFor'
+export { default as Events } from './Events'
 export { default as WhatWeOffer } from './WhatWeOffer'
 export { default as CTABanner } from './CTABanner'
 export { default as OurImpact } from './OurImpact'
