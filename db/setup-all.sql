@@ -1,0 +1,241 @@
+-- =====================================================
+-- Decimal.Health CI Agent - COMPLETE SETUP
+-- Paste this entire file into Supabase SQL Editor
+-- https://supabase.com/dashboard/project/alikgvwpoqvfkacttjhy/sql/new
+-- =====================================================
+
+-- Enable UUID extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- =====================================================
+-- ENUM TYPES
+-- =====================================================
+
+DO $$ BEGIN
+  CREATE TYPE dh_signal_type AS ENUM (
+    'NEW_OFFERING', 'CLIENT_WIN', 'THOUGHT_LEADERSHIP', 'TALENT_MOVE',
+    'PARTNERSHIP', 'ACQUISITION', 'EVENT_PRESENCE', 'PRICING_SIGNAL',
+    'REGULATORY_COMMENT', 'CAPABILITY_SHIFT'
+  );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE dh_urgency_level AS ENUM ('critical', 'high', 'medium', 'low');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+-- =====================================================
+-- TABLES
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS dh_competitors (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL UNIQUE,
+  segment_tier INTEGER NOT NULL CHECK (segment_tier BETWEEN 1 AND 5),
+  segment_label TEXT NOT NULL,
+  website_url TEXT NOT NULL,
+  description TEXT NOT NULL DEFAULT '',
+  offerings_overlap JSONB NOT NULL DEFAULT '[]',
+  last_crawled_at TIMESTAMPTZ,
+  profile_summary TEXT,
+  logo_url TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS dh_signals (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  competitor_id UUID NOT NULL REFERENCES dh_competitors(id) ON DELETE CASCADE,
+  signal_type dh_signal_type NOT NULL,
+  source_url TEXT NOT NULL DEFAULT '',
+  raw_content TEXT,
+  processed_summary TEXT NOT NULL DEFAULT '',
+  offering_tags JSONB NOT NULL DEFAULT '[]',
+  urgency dh_urgency_level NOT NULL DEFAULT 'medium',
+  strategic_assessment TEXT,
+  detected_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  processed_at TIMESTAMPTZ
+);
+
+CREATE TABLE IF NOT EXISTS dh_briefings (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  period_start DATE NOT NULL,
+  period_end DATE NOT NULL,
+  briefing_content JSONB NOT NULL DEFAULT '{}',
+  key_themes JSONB NOT NULL DEFAULT '[]',
+  recommended_actions JSONB NOT NULL DEFAULT '[]',
+  generated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS dh_crawl_history (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  competitor_id UUID NOT NULL REFERENCES dh_competitors(id) ON DELETE CASCADE,
+  source_type TEXT NOT NULL,
+  url TEXT NOT NULL,
+  content_hash TEXT,
+  last_crawled_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  change_detected BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+CREATE TABLE IF NOT EXISTS dh_search_queries (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  query_template TEXT NOT NULL,
+  category TEXT NOT NULL,
+  last_run_at TIMESTAMPTZ,
+  results_count INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS dh_alerts (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  signal_id UUID NOT NULL REFERENCES dh_signals(id) ON DELETE CASCADE,
+  alert_type TEXT NOT NULL DEFAULT 'notification',
+  delivered_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  delivery_channel TEXT NOT NULL DEFAULT 'dashboard',
+  acknowledged_at TIMESTAMPTZ
+);
+
+-- =====================================================
+-- INDEXES
+-- =====================================================
+
+CREATE INDEX IF NOT EXISTS idx_dh_competitors_tier ON dh_competitors(segment_tier);
+CREATE INDEX IF NOT EXISTS idx_dh_signals_competitor ON dh_signals(competitor_id);
+CREATE INDEX IF NOT EXISTS idx_dh_signals_type ON dh_signals(signal_type);
+CREATE INDEX IF NOT EXISTS idx_dh_signals_urgency ON dh_signals(urgency);
+CREATE INDEX IF NOT EXISTS idx_dh_signals_detected ON dh_signals(detected_at DESC);
+CREATE INDEX IF NOT EXISTS idx_dh_briefings_period ON dh_briefings(period_end DESC);
+CREATE INDEX IF NOT EXISTS idx_dh_crawl_competitor ON dh_crawl_history(competitor_id);
+CREATE INDEX IF NOT EXISTS idx_dh_alerts_signal ON dh_alerts(signal_id);
+
+-- =====================================================
+-- ROW LEVEL SECURITY
+-- =====================================================
+
+ALTER TABLE dh_competitors ENABLE ROW LEVEL SECURITY;
+ALTER TABLE dh_signals ENABLE ROW LEVEL SECURITY;
+ALTER TABLE dh_briefings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE dh_crawl_history ENABLE ROW LEVEL SECURITY;
+ALTER TABLE dh_search_queries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE dh_alerts ENABLE ROW LEVEL SECURITY;
+
+-- Policies (using DO blocks to avoid errors if they already exist)
+DO $$ BEGIN
+  CREATE POLICY "dh_allow_read" ON dh_competitors FOR SELECT USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  CREATE POLICY "dh_allow_insert" ON dh_competitors FOR INSERT WITH CHECK (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  CREATE POLICY "dh_allow_update" ON dh_competitors FOR UPDATE USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "dh_allow_read" ON dh_signals FOR SELECT USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  CREATE POLICY "dh_allow_insert" ON dh_signals FOR INSERT WITH CHECK (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  CREATE POLICY "dh_allow_update" ON dh_signals FOR UPDATE USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "dh_allow_read" ON dh_briefings FOR SELECT USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  CREATE POLICY "dh_allow_insert" ON dh_briefings FOR INSERT WITH CHECK (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "dh_allow_read" ON dh_crawl_history FOR SELECT USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  CREATE POLICY "dh_allow_insert" ON dh_crawl_history FOR INSERT WITH CHECK (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  CREATE POLICY "dh_allow_update" ON dh_crawl_history FOR UPDATE USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "dh_allow_read" ON dh_search_queries FOR SELECT USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  CREATE POLICY "dh_allow_insert" ON dh_search_queries FOR INSERT WITH CHECK (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  CREATE POLICY "dh_allow_update" ON dh_search_queries FOR UPDATE USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "dh_allow_read" ON dh_alerts FOR SELECT USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  CREATE POLICY "dh_allow_insert" ON dh_alerts FOR INSERT WITH CHECK (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN
+  CREATE POLICY "dh_allow_update" ON dh_alerts FOR UPDATE USING (true);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- =====================================================
+-- SEED: 35 COMPETITORS
+-- =====================================================
+
+-- Tier 1: Healthcare Strategy Consultancies
+INSERT INTO dh_competitors (name, segment_tier, segment_label, website_url, description, offerings_overlap) VALUES
+('Chartis', 1, 'Healthcare Strategy Consultancies', 'https://www.chartis.com', 'Leading healthcare advisory firm focused on health system strategy, clinical transformation, and performance improvement.', '["Rural Health", "Build Buyer Partner", "GTM / Product-Market Fit"]'),
+('Guidehouse', 1, 'Healthcare Strategy Consultancies', 'https://guidehouse.com', 'Global consultancy providing management, technology, and risk consulting services to public and commercial clients in the healthcare sector.', '["Rural Health", "US Market Entry", "Build Buyer Partner"]'),
+('Kaufman Hall', 1, 'Healthcare Strategy Consultancies', 'https://www.kaufmanhall.com', 'Provides management consulting, software, and data solutions to help healthcare organizations achieve optimal performance.', '["Rural Health", "Build Buyer Partner"]'),
+('ECG Management Consultants', 1, 'Healthcare Strategy Consultancies', 'https://www.ecgmc.com', 'Specializes in healthcare consulting across strategic planning, physician enterprise management, and operational performance.', '["Rural Health", "Build Buyer Partner"]'),
+('Huron Consulting Group', 1, 'Healthcare Strategy Consultancies', 'https://www.huronconsultinggroup.com', 'Global professional services firm delivering consulting and technology solutions in healthcare, education, and commercial sectors.', '["Rural Health", "Clinical Trial Acceleration", "Build Buyer Partner"]'),
+('Navigant Consulting', 1, 'Healthcare Strategy Consultancies', 'https://www.navigant.com', 'Specialized consulting firm focused on healthcare, energy, and financial services with deep industry expertise.', '["Rural Health", "US Market Entry"]'),
+('Vizient', 1, 'Healthcare Strategy Consultancies', 'https://www.vizientinc.com', 'Member-driven healthcare services company providing analytics, advisory services, and group purchasing to health systems.', '["Rural Health", "Build Buyer Partner"]')
+ON CONFLICT (name) DO NOTHING;
+
+-- Tier 2: Global Strategy Firms
+INSERT INTO dh_competitors (name, segment_tier, segment_label, website_url, description, offerings_overlap) VALUES
+('McKinsey & Company', 2, 'Global Strategy Firms', 'https://www.mckinsey.com/industries/healthcare', 'Global management consulting firm with a major healthcare practice covering pharmaceuticals, payer, provider, and digital health strategy.', '["US Market Entry", "GTM / Product-Market Fit", "Clinical Trial Acceleration"]'),
+('Boston Consulting Group', 2, 'Global Strategy Firms', 'https://www.bcg.com/industries/health-care', 'Global strategy consultancy with deep healthcare expertise spanning biopharma, medtech, payer, and provider transformation.', '["US Market Entry", "GTM / Product-Market Fit", "Clinical Trial Acceleration"]'),
+('Bain & Company', 2, 'Global Strategy Firms', 'https://www.bain.com/industry-expertise/healthcare', 'Global strategy consulting firm with healthcare practice focused on M&A, digital transformation, and growth strategy.', '["US Market Entry", "Build Buyer Partner", "GTM / Product-Market Fit"]'),
+('L.E.K. Consulting', 2, 'Global Strategy Firms', 'https://www.lek.com/industries/life-sciences', 'Global strategy consulting firm with deep life sciences and healthcare expertise in commercial strategy and market access.', '["US Market Entry", "Clinical Trial Acceleration", "GTM / Product-Market Fit"]'),
+('Oliver Wyman', 2, 'Global Strategy Firms', 'https://www.oliverwyman.com/industries/health-life-sciences.html', 'Global management consulting firm with health and life sciences practice focused on payer, provider, and digital health strategy.', '["US Market Entry", "GTM / Product-Market Fit"]'),
+('Alvarez & Marsal', 2, 'Global Strategy Firms', 'https://www.alvarezandmarsal.com/industries/healthcare', 'Global professional services firm specializing in turnaround, restructuring, and performance improvement in healthcare.', '["Build Buyer Partner", "US Market Entry"]')
+ON CONFLICT (name) DO NOTHING;
+
+-- Tier 3: Life Sciences & Specialty Advisory
+INSERT INTO dh_competitors (name, segment_tier, segment_label, website_url, description, offerings_overlap) VALUES
+('IQVIA', 3, 'Life Sciences & Specialty Advisory', 'https://www.iqvia.com', 'Leading global provider of advanced analytics, technology solutions, and clinical research services to the life sciences industry.', '["Clinical Trial Acceleration", "US Market Entry", "GTM / Product-Market Fit"]'),
+('ZS Associates', 3, 'Life Sciences & Specialty Advisory', 'https://www.zs.com', 'Management consulting and technology firm focused on sales and marketing effectiveness in pharmaceuticals and healthcare.', '["Clinical Trial Acceleration", "GTM / Product-Market Fit", "US Market Entry"]'),
+('Trinity Life Sciences', 3, 'Life Sciences & Specialty Advisory', 'https://www.trinitylifesciences.com', 'Life sciences advisory firm providing consulting, analytics, and commercial solutions for pharma and biotech companies.', '["Clinical Trial Acceleration", "US Market Entry", "GTM / Product-Market Fit"]'),
+('ClearView Healthcare Partners', 3, 'Life Sciences & Specialty Advisory', 'https://clearviewhcp.com', 'Life sciences strategy consulting firm focused on commercial strategy, pipeline development, and market access.', '["Clinical Trial Acceleration", "US Market Entry"]'),
+('Health Advances', 3, 'Life Sciences & Specialty Advisory', 'https://www.healthadvances.com', 'Strategy consulting firm exclusively focused on healthcare and life sciences, specializing in corporate strategy and transaction advisory.', '["Clinical Trial Acceleration", "GTM / Product-Market Fit", "US Market Entry"]'),
+('Putnam Associates', 3, 'Life Sciences & Specialty Advisory', 'https://www.putnam.com', 'Life sciences strategy consulting firm specializing in market access, pricing, and commercial strategy for pharma and biotech.', '["Clinical Trial Acceleration", "US Market Entry"]'),
+('Lumanity', 3, 'Life Sciences & Specialty Advisory', 'https://www.lumanity.com', 'Healthcare consultancy combining scientific, clinical, and commercial expertise to help life sciences companies navigate access and adoption.', '["Clinical Trial Acceleration", "US Market Entry", "GTM / Product-Market Fit"]'),
+('Marwood Group', 3, 'Life Sciences & Specialty Advisory', 'https://www.marwoodgroup.com', 'Advisory firm providing policy analysis, strategic advice, and business intelligence for healthcare investors and companies.', '["US Market Entry", "Build Buyer Partner"]'),
+('Avalere Health', 3, 'Life Sciences & Specialty Advisory', 'https://avalere.com', 'Strategic advisory company providing insights at the intersection of healthcare business and policy.', '["US Market Entry", "Clinical Trial Acceleration", "GTM / Product-Market Fit"]'),
+('Berkeley Research Group', 3, 'Life Sciences & Specialty Advisory', 'https://www.thinkbrg.com', 'Global consulting firm providing expert analysis in economics, healthcare, and data analytics.', '["Clinical Trial Acceleration", "US Market Entry"]'),
+('Analysis Group', 3, 'Life Sciences & Specialty Advisory', 'https://www.analysisgroup.com', 'Economics, finance, and strategy consulting firm with deep expertise in healthcare economics and outcomes research.', '["Clinical Trial Acceleration", "US Market Entry"]')
+ON CONFLICT (name) DO NOTHING;
+
+-- Tier 4: Big Four & Technology Consultancies
+INSERT INTO dh_competitors (name, segment_tier, segment_label, website_url, description, offerings_overlap) VALUES
+('Accenture', 4, 'Big Four & Technology Consultancies', 'https://www.accenture.com/us-en/industries/health', 'Global professional services company providing strategy, consulting, digital, technology, and operations services in healthcare.', '["GTM / Product-Market Fit", "Build Buyer Partner", "Rural Health"]'),
+('Deloitte', 4, 'Big Four & Technology Consultancies', 'https://www2.deloitte.com/us/en/industries/health-care.html', 'Global professional services network providing audit, consulting, tax, and advisory services with a major health care practice.', '["GTM / Product-Market Fit", "Build Buyer Partner", "US Market Entry", "Rural Health"]'),
+('PwC', 4, 'Big Four & Technology Consultancies', 'https://www.pwc.com/us/en/industries/health-industries.html', 'Global professional services firm providing consulting, assurance, and tax services with health industries practice.', '["US Market Entry", "Build Buyer Partner", "GTM / Product-Market Fit"]'),
+('EY', 4, 'Big Four & Technology Consultancies', 'https://www.ey.com/en_us/health', 'Global professional services organization providing consulting, assurance, tax, and strategy services in health and life sciences.', '["US Market Entry", "Build Buyer Partner", "GTM / Product-Market Fit"]'),
+('Cognizant', 4, 'Big Four & Technology Consultancies', 'https://www.cognizant.com/us/en/industries/healthcare', 'Global technology and professional services company providing digital, technology, consulting, and operations services in healthcare.', '["GTM / Product-Market Fit", "Build Buyer Partner"]'),
+('Slalom', 4, 'Big Four & Technology Consultancies', 'https://www.slalom.com/industries/healthcare-life-sciences', 'Modern consulting firm focused on strategy, technology, and business transformation in healthcare and life sciences.', '["GTM / Product-Market Fit", "Startup Sprint", "Build Buyer Partner"]')
+ON CONFLICT (name) DO NOTHING;
+
+-- Tier 5: Digital Health & Innovation Ecosystem
+INSERT INTO dh_competitors (name, segment_tier, segment_label, website_url, description, offerings_overlap) VALUES
+('Rock Health', 5, 'Digital Health & Innovation Ecosystem', 'https://rockhealth.com', 'Venture fund and advisory firm dedicated to digital health, providing funding, research, and ecosystem building for digital health innovators.', '["Startup Sprint", "GTM / Product-Market Fit"]'),
+('Healthbox', 5, 'Digital Health & Innovation Ecosystem', 'https://healthbox.com', 'Advisory and innovation services firm helping health systems and startups collaborate to develop and scale digital health solutions.', '["Startup Sprint", "GTM / Product-Market Fit", "Build Buyer Partner"]'),
+('StartUp Health', 5, 'Digital Health & Innovation Ecosystem', 'https://www.startuphealth.com', 'Global health innovation company investing in and supporting health transformers building solutions to health moonshots.', '["Startup Sprint", "GTM / Product-Market Fit"]'),
+('Plug and Play Tech Center', 5, 'Digital Health & Innovation Ecosystem', 'https://www.plugandplaytechcenter.com/health', 'Global innovation platform connecting startups, corporations, and government agencies in health and other sectors.', '["Startup Sprint", "GTM / Product-Market Fit", "Build Buyer Partner"]'),
+('GuideWell', 5, 'Digital Health & Innovation Ecosystem', 'https://www.guidewell.com', 'Health solutions company with a focus on innovation, technology, and population health management across the care continuum.', '["Startup Sprint", "Rural Health", "GTM / Product-Market Fit"]')
+ON CONFLICT (name) DO NOTHING;
+
+-- =====================================================
+-- DONE! You should see 6 dh_ tables and 35 competitors
+-- =====================================================
+SELECT 'Setup complete! ' || count(*) || ' competitors seeded.' as result FROM dh_competitors;
