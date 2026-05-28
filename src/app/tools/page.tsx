@@ -3,13 +3,14 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Calculator, ClipboardCheck, ArrowRight } from 'lucide-react'
+import { Calculator, ClipboardCheck, ArrowRight, Activity } from 'lucide-react'
 import Assessment, { type AssessmentResult } from '@/components/Assessment'
 import AssessmentResults from '@/components/AssessmentResults'
 import ROICalculator from '@/components/ROICalculator'
+import CostOfDelayCalculator from '@/components/CostOfDelayCalculator'
 import { Navigation, Footer } from '@/components'
 
-type Tool = 'assessment' | 'roi' | null
+type Tool = 'assessment' | 'roi' | 'cost-of-delay' | null
 
 export default function ToolsPage() {
   const [activeTool, setActiveTool] = useState<Tool>(null)
@@ -91,6 +92,12 @@ export default function ToolsPage() {
                 <ROICalculator />
               </div>
             )}
+
+            {activeTool === 'cost-of-delay' && (
+              <div>
+                <CostOfDelayCalculator />
+              </div>
+            )}
           </div>
         </main>
         <Footer />
@@ -124,7 +131,7 @@ export default function ToolsPage() {
           </div>
 
           {/* Tools Grid */}
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Assessment Tool */}
             <motion.button
               initial={{ opacity: 0, y: 20 }}
@@ -178,6 +185,35 @@ export default function ToolsPage() {
 
                 <div className="flex items-center gap-2 text-decimal-teal font-semibold group-hover:gap-3 transition-all">
                   Calculate ROI
+                  <ArrowRight className="w-5 h-5" />
+                </div>
+              </div>
+            </motion.button>
+
+            {/* Cost of Delay Calculator */}
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              onClick={() => setActiveTool('cost-of-delay')}
+              className="text-left group"
+            >
+              <div className="card-elevated h-full flex flex-col hover:scale-[1.02] transition-transform">
+                <div className="w-16 h-16 rounded-2xl bg-decimal-navy text-white flex items-center justify-center mb-6">
+                  <Activity className="w-8 h-8" />
+                </div>
+
+                <h2 className="text-2xl font-bold text-decimal-navy mb-3">
+                  Cost of Delay Calculator
+                </h2>
+
+                <p className="text-decimal-navy/70 mb-6 flex-1">
+                  See what diagnostic delay is costing your trial portfolio. 90 seconds.
+                  Tuned for oncology, rare disease, neuro, and immunology programs.
+                </p>
+
+                <div className="flex items-center gap-2 text-decimal-teal font-semibold group-hover:gap-3 transition-all">
+                  Run Calculator
                   <ArrowRight className="w-5 h-5" />
                 </div>
               </div>
